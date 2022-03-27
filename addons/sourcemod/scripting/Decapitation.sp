@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "[ZR] Decapitation",
 	author = "ire.",
 	description = "Remove head or legs from a player model",
-	version = "1.0"
+	version = "1.0.0"
 };
 
 public void OnPluginStart()
@@ -35,27 +35,23 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-    if (g_smModels == null || g_aModels == null)
-    {
-        g_smModels = new StringMap();
-        g_aModels = new ArrayList(256);
-        LoadModels();
-    }
-}
+	if (g_smModels != null)
+	{
+		g_smModels.Clear();
+		delete g_smModels;
+		g_smModels = null;
+	}
 
-public void OnMapEnd()
-{
-    if (g_smModels != null)
-    {
-        delete g_smModels;
-        g_smModels = null;
-    }
-    
-    if (g_aModels == null)
-    {
-        delete g_aModels;
-        g_aModels = null;
-    }
+	if (g_aModels != null)
+	{
+		g_aModels.Clear();
+		delete g_aModels;
+		g_aModels = null;
+	}
+
+	g_smModels = new StringMap();
+	g_aModels = new ArrayList(256);
+	LoadModels();
 }
 
 public void OnClientDisconnect(int client)
