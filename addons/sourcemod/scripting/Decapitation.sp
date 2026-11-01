@@ -2,9 +2,6 @@
 #include <sdktools>
 #include <zombiereloaded>
 
-#pragma semicolon 1
-#pragma newdecls required
-
 #pragma tabsize 0
 
 ConVar g_cvDecapitationHits;
@@ -120,12 +117,11 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 
 public void ZR_OnClientInfected(int client, int attacker, bool motherInfect, bool respawnOverride, bool respawn)
 {
-	CreateTimer(0.1, CheckPlayerModel, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.1, CheckPlayerModel, client);
 }
 
-public Action CheckPlayerModel(Handle timer, int userid)
+public Action CheckPlayerModel(Handle timer, int client)
 {
-	int client = GetClientOfUserId(userid);
 	if(!IsValidClient(client))
 	{
 		return Plugin_Stop;
@@ -139,7 +135,7 @@ public Action CheckPlayerModel(Handle timer, int userid)
 		g_DecapitableModel[client] = true;
 	}
 	
-	return Plugin_Stop;
+	return Plugin_Continue;
 }
 
 void LoadModels()
@@ -154,13 +150,8 @@ void LoadModels()
 	}
 	
 	KeyValues Kv = new KeyValues("Models");
-	if(!Kv.ImportFromFile(FilePath) || !Kv.GotoFirstSubKey())
-	{
-		LogError("[Decapitation] Could not read any model from %s", FilePath);
-		delete Kv;
-		return;
-	}
-
+	Kv.ImportFromFile(FilePath);
+	Kv.GotoFirstSubKey();
 	do
 	{
 		Kv.GetString("DefaultModel", DefaultModel, sizeof(DefaultModel));
@@ -169,7 +160,7 @@ void LoadModels()
 		g_smModels.SetString(DefaultModel, DecapitatedModel);
 		g_aModels.PushString(DefaultModel);
 	}
-	while (Kv.GotoNextKey());
+	while Kv.GotoNextKey();
 	
 	delete Kv;
 }
