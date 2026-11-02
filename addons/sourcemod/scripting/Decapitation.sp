@@ -19,7 +19,7 @@ public Plugin myinfo =
 	name = "[ZR] Decapitation",
 	author = "ire.",
 	description = "Remove head or legs from a player model",
-	version = "1.0.0"
+	version = "1.0.1"
 };
 
 public void OnPluginStart()
